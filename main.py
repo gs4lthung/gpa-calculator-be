@@ -31,11 +31,22 @@ async def gpa_calculator(file: UploadFile):
 
     total_points = 0
     total_credits = 0
+    not_done_rows = 0
+    not_counted_rows_semester_subject_code = [
+        "LUK1",
+        "LUK2",
+        "LUK3",
+        "LUK4",
+        "TRS501",
+        "(*) Môn điều kiện tốt nghiệp, không tính vào điểm trung bình tích lũy"
+    ]
     for row in data:
         is_do_not_count = True if row[('Unnamed: 10_level_0', 'Unnamed: 10_level_1')] == "*" else False
         if not is_do_not_count:
             is_passed = True if row[('Status', 'Unnamed: 9_level_1')] == 'Passed' else False
             if not is_passed:
+                if not row[('Semester', 'SubjectCode')] in not_counted_rows_semester_subject_code:
+                    not_done_rows += 1
                 continue
             grade = row[('Grade', 'Unnamed: 8_level_1')]
             credit = row[('Credit', 'Unnamed: 7_level_1')]
